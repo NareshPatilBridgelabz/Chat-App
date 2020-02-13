@@ -73,3 +73,34 @@ exports.Login = (request, callback) => {
         else callback("email doesnot match or exist");
     })
 }
+//exports forgot password 
+exports.forgotPassword = (request, callback) => {
+    register.findOne({
+        //checks the email in schema using findone
+        "email": request.body.email
+    }, (err, data) => {
+        if (data) {
+            callback(null, data)
+        }
+        else {
+            callback("invalid user email ");
+        }
+    })
+}
+//exports reset password
+exports.ResetPassword = (request, callback) => {
+    bcrypt.hash(request.body.password, 10, (err, encrypted) => {
+        register.updateOne(
+           
+            { "_id":request.decoded.payload }, {
+                "password": encrypted
+            }
+            , (err, data) => {
+                if (data)
+                    callback(null, data);
+                else
+                    callback("error");
+            })
+    })
+
+}
