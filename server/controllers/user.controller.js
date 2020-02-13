@@ -98,8 +98,9 @@ exports.forgotpassword = (request, res) => {
                     console.log(payLoad)
                     let obj = tokenGenerate.GenerateToken(payLoad);
                     console.log("controller pay load", obj);
-                    let url = `http://localhost:4000/resetPassword/${obj.token}`
+                    let url = `http://localhost:4000/resetPassword`
 
+                    console.log(`${obj.token}`)
                     console.log("pay load", url);
                     console.log("email", request.body.email)
                     mailler.sendMailer(url, request.body.email)
@@ -113,5 +114,36 @@ exports.forgotpassword = (request, res) => {
 
     } catch (e) {
         console.log(e)
+    }
+}
+//exports reset password
+exports.resetPassword = (request, res) => {
+    try {
+        //request for the password and confirm password
+        console.log("Re-setting password");
+        request.checkBody('password', 'password is invalid').notEmpty().len(7, 13);
+        request.checkBody('confirmPassword', 'password is invalid').notEmpty().len(7, 13);
+        var error = request.validationErrors();
+        //check if password is equal to confirm password
+        if (request.body.password != request.body.confirmPassword)
+            var error = "confirmpassword is incorrect";
+        var response = {};
+        if (error) {
+            response.error = error;
+            response.failure = false;
+            return res.status(422).send(response);
+        } else {
+            userServices.resetPassword(request, (err, data) => {
+                if (err) {
+                    res.status(404).send(response);
+                } else {
+                    res.status(200).send(data);
+                }
+
+                console.log(data);
+            })
+        }
+    } catch (e) {
+        console.log(e);
     }
 }
