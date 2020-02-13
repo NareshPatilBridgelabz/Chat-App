@@ -5,6 +5,7 @@
 * @version        : 1.0
 * @since          : 13-02-2020
 ******************************************************************************/
+require('dotenv').config();
 const express = require('express')
 const bodyParser = require('body-parser');
 const app = express();
@@ -29,10 +30,9 @@ mongoose.connect(dbconfig.url, {
         console.log('Could not connect to the database');
         process.exit();
     })
-
 app.get('/', (req, res) => {
     res.json({"message": "Welcome to Chat-App application."});
 });
-app.listen(3000, () => {
-    console.log("Server is listening on port : 3000")
+app.listen(process.env.PORT, () => {
+    console.log("Server is listening on port : " + process.env.PORT)
 });
