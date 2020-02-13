@@ -7,5 +7,7 @@ const userController=require('../controllers/user.controller')
 router.post('/register',userController.register)
 //User login using post http method
 router.post('/login',userController.login)
+//Forgot password using post http method
+router.post('/forgotpassword',userController.forgotpassword)
  
 module.exports=router;
