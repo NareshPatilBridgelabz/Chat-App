@@ -1,4 +1,6 @@
-const userServices = require('../services/user.services')
+const userServices = require('../services/user.services');
+const tokenGenerate = require('../middleware/token');
+const mailler = require('../middleware/mailler');
 //exports register for the user 
 exports.register = (request, res) => {
     try {
@@ -17,7 +19,7 @@ exports.register = (request, res) => {
             res.status(500).send(response)
             
             console.log('error-register', error)
-            console.log('response', response)
+            // console.log('response', response)
         }
         else {
             //register checks the request in the user services
@@ -39,12 +41,6 @@ exports.register = (request, res) => {
         console.log(e)
     }
 }
-/**
- * @desc Gets the input from front end filters and performs validation
- * @param request request contains all the requested data
- * @param response sends the data or err
- * @return responses with a http response
- */
 //exports login
 exports.login = (request, res) => {
     try {
@@ -76,5 +72,46 @@ exports.login = (request, res) => {
         }
     } catch (e) {
         console.log(e);
+    }
+}
+//exports forgotpassword
+exports.forgotpassword = (request, res) => {
+    try {
+        console.log('Forgot password')
+        //request for the email,password and new password
+        request.checkBody('email', 'email is invalid').notEmpty().isEmail()
+        var error = request.validationErrors()
+        var response = {}
+        if (error) {
+            response.error = error
+            response.failure = false
+            res.status(422).send(response);
+        } else {
+            userServices.forgotpassword(request, (err, data) => {
+                if (err) {
+                    response.failure = false
+                    response.data = err
+                    res.status(402).send(response)
+                } else {
+                    console.log('data')
+                    let payLoad = data._id;
+                    console.log(payLoad)
+                    let obj = tokenGenerate.GenerateToken(payLoad);
+                    console.log("controller pay load", obj);
+                    let url = `http://localhost:4000/resetPassword/${obj.token}`
+
+                    console.log("pay load", url);
+                    console.log("email", request.body.email)
+                    mailler.sendMailer(url, request.body.email)
+                    response.sucess = true;
+                    response.data = data;
+                    res.status(200).send(response);
+                }
+            })
+        }
+
+
+    } catch (e) {
+        console.log(e)
     }
 }
