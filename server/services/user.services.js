@@ -26,3 +26,30 @@ exports.login = (request, callback) => {
         console.log(e);
     }
 }
+//exports forgot password
+exports.forgotpassword = (request, callback) => {
+    try {
+        model.forgotPassword(request, (err, data) => {
+            if (err) {
+                callback(err)
+            } else {
+                callback(null, data)
+            }
+        })
+    } catch (err) {
+        console.log(err)
+    }
+}
+//exports reset password
+exports.resetPassword=(request,callback)=>{
+    try{
+    model.ResetPassword(request,(err,data)=>{
+        if(err){
+            callback(err);
+        }else
+        callback(null,data)
+    })
+} catch (e) {
+    console.log(e);
+}
+}
