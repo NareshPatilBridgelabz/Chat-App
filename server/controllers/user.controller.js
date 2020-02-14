@@ -130,17 +130,23 @@ exports.resetPassword = (request, res) => {
         var response = {};
         if (error) {
             response.error = error;
-            response.failure = false;
+            response.status = false;
             return res.status(422).send(response);
         } else {
             userServices.resetPassword(request, (err, data) => {
                 if (err) {
+                    response.status = false;
+                    response.error = err;
+                    response.error = "database error.";
                     res.status(404).send(response);
                 } else {
-                    res.status(200).send(data);
+                    if(data.n === 1 && data.nModified === 1 && data.ok === 1){
+                        response.status = true;
+                        response.resetpassword = 'successfully';
+                    }
+                    res.status(200).send(response);
                 }
-
-                console.log(data);
+                console.log(data );
             })
         }
     } catch (e) {
