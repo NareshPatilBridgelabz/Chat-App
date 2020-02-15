@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+
+  <head>
+    <title>Bootstrap Example</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js"></script>
+    <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+    <script src="//ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/jquery-form-validator/2.3.26/jquery.form-validator.min.js"></script>
+  </head>
+
+  <style>
+    body  {
+      background-image: url("https://registry.gov.in/images/banner_img5.png");
+      background-size: 100% 100%;
+      background-color: #cccccc;
+    }
+  </style>
+
+<body>
+
+ 
+  <div class="container-fluid">
+    <div class="row">
+      <div class="col-lg-6">
+      </div>
+      <div class="col-lg-3" style="margin-top: 88px;">
+        <div class="card shadow-lg p-3 mb-5 bg-white rounded" style="width:400px">
+          <div class="card-body">
+            <h4 class="card-title">Registration Form</h4>
+
+            <div class="container">
+              <form>
+                <div class="form-group">
+                  <label for="First Name">First Name:</label>
+                  <input class="form-control" id="First Name" placeholder="Enter First Name" name="firstName" required>
+                </div>
+                <div class="form-group">
+                  <label for="Last Name">Last Name:</label>
+                  <input class="form-control" id="Last Name" placeholder="Enter Last Name" name="lastName" required>
+                </div>
+                <div class="form-group">
+                  <label for="email">Email :</label>
+                  <input type="email" class="form-control" id="email" placeholder="Enter Email" name="email" required>
+                </div>
+                <div class="form-group">
+                  <label for="pwd">Password:</label>
+                  <input type="password" class="form-control" id="pwd" placeholder="Enter password" name="password" required>
+                </div>
+                <div class="form-group">
+                  <label for="country">Country:</label>
+                  <input type="country" class="form-control" id="country" placeholder="Enter Country" name="country" required>
+                </div>
+                <button type="submit" id="signUpbtn" class="btn btn-success">Submit</button>
+              </form>
+            </div>
+
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</body>
+
+
+<script>
+
+$("#signUpbtn").click(function (e) {
+        e.preventDefault();
+        let data = $('form').serializeArray();
+        console.log("sda", data);
+        let forObj = {};
+        data.forEach(element => {
+          forObj[element.name] = element.value;
+        });
+        var signUpData = JSON.stringify(forObj)
+        console.log("data", signUpData);
+        // console.log(JSON.parse(JSON.stringify(data)) );
+        $.ajax({
+          type: 'POST',
+          contentType: "application/json",
+          url: "http://localhost:4000/register",
+          data: signUpData,
+          dataType: "json",
+          success: function (dataofconfirm) {
+            swal({
+              title: "Good job!",
+              text: "You clicked the button!",
+              icon: "success"
+            });
+          },
+          error: function (xhr, textStatus, error) {
+            swal({
+              title: "xhr.statusText",
+              text: error,
+              icon: "error"
+            });
+          }
+        });
+      });
+</script>
+
+</html>
