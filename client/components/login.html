@@ -60,4 +60,43 @@
   </div>
 
 </body>
+
+
+<script>
+$("#signInbtn").click(function (e) {
+        e.preventDefault();
+        let data = $('form').serializeArray();
+        console.log("sda", data);
+        let forObj = {};
+        data.forEach(element => {
+          forObj[element.name] = element.value;
+        });
+        var signInData = JSON.stringify(forObj)
+        console.log("data", signInData);
+        alert(signInData);
+        console.log(JSON.parse(JSON.stringify(data)) );
+        $.ajax({
+          type: 'POST',
+          contentType: "application/json",
+          url: "http://localhost:4000/login",
+          data: signInData,
+          dataType: "json",
+          success: function (dataofconfirm) {
+            Swal.fire({
+                icon: 'success ',
+                title: "Logged",
+                text: dataofconfirm,
+                })
+          },
+          error: function (xhr, textStatus, error) {
+            Swal.fire({
+                title: "xhr.statusText",
+                text: error,
+                icon: "error"
+                })
+          }
+        });
+      });
+</script>
+
 </html>
