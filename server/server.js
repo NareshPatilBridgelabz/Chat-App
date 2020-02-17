@@ -13,10 +13,12 @@ const routes = require('./routes/user.routes')
 const expressValidator = require('express-validator')
 const dbconfig = require('./config/database.config')
 const mongoose = require('mongoose');
+const cors = require('cors')
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }))
 app.use(expressValidator());
+app.use(cors())
 app.use('/', routes);
 
 //connecting to the database
