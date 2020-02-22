@@ -572,20 +572,6 @@
                     </div>
                     <div class="card-body contacts_body">
                         <ui class="contacts" id="contact">
-                            <!-- <li class="active">
-                                <div class="d-flex bd-highlight">
-                                    <div class="img_cont">
-                                        <img src="https://static.turbosquid.com/Preview/001292/481/WV/_D.jpg"
-                                            class="rounded-circle user_img">
-                                        <span class="online_icon"></span>
-                                    </div>
-                                    <div class="user_info">
-                                        <span>Khalid</span>
-                                        <p>Kalid is online</p>
-                                    </div>
-                                </div>
-                            </li> -->
-
                         </ui>
                     </div>
                     <div class="card-footer"></div>
@@ -604,52 +590,18 @@
                                 <span class="recentUser"></span>
                                 <p>1767 Messages</p>
                             </div>
-                            <!-- <div class="video_cam">
-                                        <span><i class="fas fa-video"></i></span>
-                                        <span><i class="fas fa-phone"></i></span>
-                                    </div> -->
+
                         </div>
                         <span id="action_menu_btn"><i class="fas fa-ellipsis-v"></i></span>
-                        <!-- <div class="action_menu">
-                                    <ul>
-                                        <li><i class="fas fa-user-circle"></i> View profile</li>
-                                        <li><i class="fas fa-users"></i> Add to close friends</li>
-                                        <li><i class="fas fa-plus"></i> Add to group</li>
-                                        <li><i class="fas fa-ban"></i> Block</li>
-                                    </ul>
-                                </div> -->
+
                     </div>
 
                     <!-- Message -->
                     <div class="card-body msg_card_body" id="chats-msg">
-                        <!-- <div class="d-flex justify-content-start mb-4">
-                                    <div class="msg_cotainer">
-                                        Hi, how are you samim?
-                                    </div>
-                                </div>
-                                <div class="d-flex justify-content-end mb-4">
-                                    <div class="msg_cotainer_send">
-                                        Hi Khalid i am good tnx how about you?
-                                    </div>
-                                </div> -->
 
-                        <!-- <div class="d-flex justify-content-start mb-4">
-                                    <div class="img_cont_msg">
-                                        <img src="https://static.turbosquid.com/Preview/001292/481/WV/_D.jpg" class="rounded-circle user_img_msg">
-                                    </div>
-                                    <div class="msg_cotainer">
-                                        Bye, see you
-                                        <span class="msg_time">9:12 AM, Today</span>
-                                    </div>
-                                </div> -->
                     </div>
-                    <!-- <input type="button" value="Send" id="btn" name="send" onclick="sendMessage()">
-                            <input type="text" name="message" id="msg" > -->
                     <div class="card-footer">
                         <div class="input-group">
-                            <!-- <div class="input-group-append">
-                                        <span class="input-group-text attach_btn"><i class="fas fa-paperclip"></i></span>
-                                    </div> -->
                             <textarea name="" class="form-control type_msg" id="msg"
                                 placeholder="Type your message..."></textarea>
                             <div class="input-group-append">
@@ -662,9 +614,8 @@
             </div>
         </div>
     </div>
-    <!-- /#page-wrapper -->
-</div><!-- /#wrapper -->
-
+    
+</div>
 <script type="text/javascript" src="/socket.io/socket.io.js"></script>
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
 <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
@@ -687,7 +638,6 @@
                     swal("You are still login.");
                 }
             });
-        // alert("logout");
     })
 
     $(document).ready(() => {
@@ -696,7 +646,6 @@
         let url = new URL(url_string);
         let c = url.searchParams.get("data");
         let userData = JSON.parse(c);
-        // alert(userData.data.firstName);
         loginUserData = userData.data;
         $("#loggedUserName").html(userData.data.firstName);
 
@@ -724,11 +673,11 @@
     });
 
     //chat ContactUsers.
-    function contactBlock(email,firstname) {
-        $('#sendMsgBtn').attr("data",email)
+    function contactBlock(email, firstname) {
+        $('#sendMsgBtn').attr("data", email)
         $("#chats-msg").html('');//clear chat box.
         $(".recentUser").html(firstname);
-        let request = {"from":loginUserData.email,"to":email}
+        let request = { "from": loginUserData.email, "to": email }
         $.ajax({
             type: 'POST',
             contentType: "application/json",
@@ -739,10 +688,10 @@
                 console.log(data.usersdata);
                 data.usersdata.forEach((element) => {
                     // console.log(element.chat)
-                    if(element.from === loginUserData.email){
+                    if (element.from === loginUserData.email) {
                         $("#chats-msg").append("<div class='d-flex justify-content-end mb-4'><div class='msg_cotainer_send'>" + element.chat + "</div></div>");
-                    }else{
-                        $("#chats-msg").append("<div class='d-flex justify-content-start mb-4'><div class='msg_cotainer'>" + element.chat + "</div></div>");  
+                    } else {
+                        $("#chats-msg").append("<div class='d-flex justify-content-start mb-4'><div class='msg_cotainer'>" + element.chat + "</div></div>");
                     }
                 })
             }
@@ -752,17 +701,12 @@
     let socket = io.connect();
 
     $(document).ready(() => {
-        // console.log("sockert id : ",socket.id);
         $('#msg').val("");
         socket.on("updateHeader", (data) => {
             console.log("sockert id (ReciverData) : ", socket.id);
-            // alert(data);
             $(".contactUser").trigger("click");
-            // $("#chats-msg").append("<div class='d-flex justify-content-start mb-4'><div class='msg_cotainer'>" + data + "</div></div>");
-
         })
     })
-    
     function sendMessage() {
         // For Socket.
         var message = $('#msg').val();
@@ -774,8 +718,8 @@
         //For BackEnd.
         let receiver = $('#sendMsgBtn').attr('data');
         let sendDataToUser = {
-            "from":loginUserData.email,
-            "to":receiver,
+            "from": loginUserData.email,
+            "to": receiver,
             "chat": message
         }
         $.ajax({
