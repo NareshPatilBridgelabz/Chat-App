@@ -3,6 +3,8 @@ const tokenGenerate = require('../middleware/token');
 const mailler = require('../middleware/mailler');
 //exports register for the user 
 exports.register = (request, res) => {
+    console.log("req",request.body);
+    
     try {
         //request for the details 
         request.checkBody('firstName', 'firstname is invalid').notEmpty().isAlpha();
@@ -22,9 +24,10 @@ exports.register = (request, res) => {
             // console.log('response', response)
         }
         else {
+            console.log("req",request.body);
+
             //register checks the request in the user services
             userServices.register(request, (err, data) => {
-
                 if (err) {
                     response.success = false
                     response.err = err
@@ -101,11 +104,14 @@ exports.forgotpassword = (request, res) => {
                     let url = `http://localhost:4000/resetPassword`
 
                     console.log(`${obj.token}`)
+                    // response.cookie('auth',obj.token);
                     console.log("pay load", url);
                     console.log("email", request.body.email)
                     mailler.sendMailer(url, request.body.email)
+                    response.token = obj.token;
                     response.sucess = true;
                     response.data = data;
+
                     res.status(200).send(response);
                 }
             })
@@ -125,6 +131,8 @@ exports.resetPassword = (request, res) => {
         request.checkBody('confirmPassword', 'password is invalid').notEmpty().len(7, 13);
         var error = request.validationErrors();
         //check if password is equal to confirm password
+        console.log("password : "+request.body.password);
+        console.log("comfirm-password : "+request.body.confirmPassword);
         if (request.body.password != request.body.confirmPassword)
             var error = "confirmpassword is incorrect";
         var response = {};
@@ -149,6 +157,75 @@ exports.resetPassword = (request, res) => {
                 console.log(data );
             })
         }
+    } catch (e) {
+        console.log(e);
+    }
+}
+
+exports.usersData = (request, res) => {
+    try {
+        //request for the password and confirm password
+        console.log("Get USerData.");
+        // console.log(request.body);
+        let response = {};
+        userServices.userData(request, (err, data) => {
+            if (err) {
+                response.status = false;
+                response.error = err;
+                response.error = "database error.";
+                res.status(404).send(response);
+            } else {
+                response.status = true;
+                response.usersdata = data;
+                res.status(200).send(response);
+            }
+        })
+    } catch (e) {
+        console.log(e);
+    }
+}
+
+// Save chat Controller.
+exports.saveChat = (request, res) => {
+    try {
+        console.log("Get constroller.");
+        let response = {};
+        userServices.saveChat(request, (err, data) => {
+            if (err) {
+                console.log("Controller ERRO : "+ err);
+                response.status = false;
+                response.error = err;
+                response.error = "database error.";
+                res.status(404).send(response);
+            } else {
+                response.status = true;
+                response.usersdata = data;
+                res.status(200).send(response);
+            }
+        })
+    } catch (e) {
+        console.log(e);
+    }
+}
+
+// Get chats
+exports.getChat = (request, res) => {
+    try {
+        console.log("Get constroller.");
+        let response = {};
+        userServices.getChat(request, (err, data) => {
+            if (err) {
+                console.log("Controller ERRO : "+ err);
+                response.status = false;
+                response.error = err;
+                response.error = "database error.";
+                res.status(404).send(response);
+            } else {
+                response.status = true;
+                response.usersdata = data;
+                res.status(200).send(response);
+            }
+        })
     } catch (e) {
         console.log(e);
     }
