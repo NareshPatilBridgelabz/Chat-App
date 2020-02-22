@@ -24,10 +24,30 @@ const userData = new Schema({
         type:String,
         required:true
     }
-})
+});
+
+let chatsData = new Schema({
+    from:{
+        type:String,
+        required:true
+    },
+    to:{
+        type:String,
+        required:true
+    },
+    chat:{
+        type:String,
+        required:true
+    }
+}, {
+    timestamps: true
+});
 let register = mongoose.model("users", userData)
+let chats = mongoose.model("chats", chatsData);
 
 exports.Register  = (request, callback) => {
+    console.log("in model ",request.body);
+
     emailExistence.check(request.body.email, (err, result) => {
         if (result) {
             register.findOne({ "email": request.body.email }, (err, data) => {
@@ -43,19 +63,26 @@ exports.Register  = (request, callback) => {
                         })
                         userDetails.save((err, data) => {
                             if (err) {
+                                console.log("err in save",err);
+                                
                                 callback(err);
-                            } else callback(null, data);
+                            } else 
+                            {
+                                console.log("dta",data);
+                                
+                                callback(null, data);
+                            }
                         })
                     })
                 } 
                 console.log("model end")
             })
-        }
-        else {
+        }else {
             callback("email is invalid ")
         }
     })
-}
+}       
+     
 //exports login
 exports.Login = (request, callback) => {
     register.findOne({
@@ -64,10 +91,16 @@ exports.Login = (request, callback) => {
         if (data) {
             //compare the password
             bcrypt.compare(request.body.password, data.password, (err, sucess) => {
-                if (sucess)
-                    callback(null, data);
-                else
+                if (sucess){
+                    let responce = {};
+                    responce._id = data._id;
+                    responce.firstName = data.firstName;
+                    responce.email = data.email;
+                    callback(null, responce);
+                }
+                else{
                     callback("Wrong Password");
+                }
             })
         }
         else callback("email doesnot match or exist");
@@ -102,5 +135,54 @@ exports.ResetPassword = (request, callback) => {
                     callback("error");
             })
     })
+}
+//Get All User Data.
+exports.userData = (request, callback) => {
 
+        register.find({'email' : {'$ne' : request.body.email}},{ _id: 1, firstName: 1, email: 1}, (err, data) => {
+                if (data){
+                    console.log(request.body);
+                    callback(null, data);  
+                }else{
+                    callback("error");
+                }
+                   
+            })
+}
+//Save The Chat
+exports.saveChat = (request, callback) => {
+    try{
+        let chatNewData = new chats({
+            "from" : request.body.from,
+            "to" : request.body.to,
+            "chat" : request.body.chat
+        })
+        chatNewData.save((err,data) => {
+            if(err){
+                console.log("service ERRO : "+ err);
+                callback(err);
+            } else {
+                callback(null,data)
+            }
+        })
+    }
+    
+}
+//Get The Chat data
+exports.getChat = (request, callback) => {
+    try{
+        chats.find({"$or": [{
+            "from": request.body.from,"to":request.body.to
+        }, {
+            "from": request.body.to,"to":request.body.from
+        }]},(err,data) => {
+            if(err){
+                callback(err);
+            }else{
+                callback(null,data);
+            }
+        })
+    }catch(err){
+        throw err;
+    }
 }
