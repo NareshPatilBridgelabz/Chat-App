@@ -19,6 +19,7 @@ app.get("/",(request,response) => {
     response.sendFile(path.join(__dirname,'../components/dashboard.html'));
 })
 
+// For dashboard path.
 app.get("/dashboard",(request,response) => {
     response.sendFile(path.join(__dirname,'../components/dashboard.html'));
 })
