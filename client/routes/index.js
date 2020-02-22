@@ -14,6 +14,7 @@ http.listen(5000,() => {
     console.log(`Port listening on : 5000.`);
 })
 
+//For default path.
 app.get("/",(request,response) => {
     response.sendFile(path.join(__dirname,'../components/dashboard.html'));
 })
