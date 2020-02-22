@@ -170,19 +170,15 @@ exports.saveChat = (request, callback) => {
 }
 //Get The Chat data
 exports.getChat = (request, callback) => {
-    try{
-        chats.find({"$or": [{
-            "from": request.body.from,"to":request.body.to
-        }, {
-            "from": request.body.to,"to":request.body.from
-        }]},(err,data) => {
-            if(err){
-                callback(err);
-            }else{
-                callback(null,data);
-            }
-        })
-    }catch(err){
-        throw err;
-    }
+    chats.find({"$or": [{
+        "from": request.body.from,"to":request.body.to
+    }, {
+        "from": request.body.to,"to":request.body.from
+    }]},(err,data) => {
+        if(err){
+            callback(err);
+        }else{
+            callback(null,data);
+        }
+    })
 }
