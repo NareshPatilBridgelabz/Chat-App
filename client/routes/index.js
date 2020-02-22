@@ -45,7 +45,6 @@ io.sockets.on("connection",(socket) => {
     console.log(socket.id);
     socket.on('sendmsg',(data) => {
         socket.broadcast.emit("updateHeader",data);
-        // io.sockets.emit('updateHeader', data);
     })
 })
 
