@@ -208,7 +208,7 @@ exports.saveChat = (request, res) => {
     }
 }
 
-// Get chats
+// Get chats constroller.
 exports.getChat = (request, res) => {
     try {
         console.log("Get constroller.");
