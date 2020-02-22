@@ -83,7 +83,7 @@ exports.saveChat = (request, callback) => {
         console.log(e);
     }
 }
-
+//Get Chat Services.
 exports.getChat = (request, callback) => {
     try {
         model.getChat(request, (err, data) => {
