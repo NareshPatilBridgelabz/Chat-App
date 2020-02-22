@@ -2,9 +2,17 @@ const express = require('express');
 const app = express();
 const path = require('path');
 
-app.listen(5000,() => {
-    console.log('Client now on : 5000 PORT.');
-});
+// const express = require('express');
+// const app = express();
+const http = require('http').Server(app);
+const io = require('socket.io')(http);
+
+// app.listen(5000,() => {
+//     console.log('Client now on : 5000 PORT.');
+// });
+http.listen(5000,() => {
+    console.log(`Port listening on : 5000.`);
+})
 
 app.get("/",(request,response) => {
     response.sendFile(path.join(__dirname,'../components/dashboard.html'));
@@ -30,7 +38,12 @@ app.get("/resetpassword",(request,response) => {
     response.sendFile(path.join(__dirname,'../components/resetpassword.html'));
 })
 
-//services files
-app.get('/services',function(req,res){
-    res.sendFile(path.join(__dirname + '../services/user.services.js')); 
-});
+io.sockets.on("connection",(socket) => {
+    console.log(`A new client connected. `);
+    console.log(socket.id);
+    socket.on('sendmsg',(data) => {
+        socket.broadcast.emit("updateHeader",data);
+        // io.sockets.emit('updateHeader', data);
+    })
+})
+
